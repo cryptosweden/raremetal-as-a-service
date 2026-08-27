@@ -23,3 +23,8 @@ AI (vision model) checks: does this look like real bars/coins, do visible serial
 AI verdict + hash of the media + metadata → signed attestation
 Attestation (hash only, not the raw media) → written onchain as a "Proof of Reserve" record
 Anyone can verify: hash exists onchain, timestamp, custodian signature, AI confidence score — without seeing the actual photo or full inventory
+
+
+
+
+https://cryptosweden.github.io/raremetal-as-a-service/ - early website of the Metal Verification Network will look like and function.
