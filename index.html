@@ -1,507 +1,69 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Proof, Not Paperwork — Verified Metal Reserves</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --ink:#1B1E1D;
-    --ink-soft:#242826;
-    --paper:#EDE7D9;
-    --paper-dim:#E2DBC9;
-    --bronze:#B0894A;
-    --bronze-dim:#9C7A3C;
-    --verdigris:#5C7C6B;
-    --ash:#8A8378;
-    --ash-on-paper:#6B6558;
-    --hairline: rgba(237,231,217,0.14);
-    --hairline-paper: rgba(27,30,29,0.14);
-  }
-  *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    margin:0;
-    background:var(--ink);
-    color:var(--paper);
-    font-family:'IBM Plex Sans', sans-serif;
-    -webkit-font-smoothing:antialiased;
-  }
-  h1,h2,h3{
-    font-family:'Fraunces', serif;
-    font-weight:500;
-    margin:0;
-    letter-spacing:-0.01em;
-  }
-  .mono{font-family:'IBM Plex Mono', monospace;}
-  a{color:inherit;}
-  .wrap{max-width:1120px; margin:0 auto; padding:0 32px;}
-  @media (max-width:640px){.wrap{padding:0 20px;}}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RareMetal-as-a-Service — Metal Verification Network (MVN)</title>
 
-  /* ---- nav ---- */
-  nav{
-    position:sticky; top:0; z-index:50;
-    background:rgba(27,30,29,0.88);
-    backdrop-filter:blur(8px);
-    border-bottom:1px solid var(--hairline);
-  }
-  nav .wrap{
-    display:flex; align-items:center; justify-content:space-between;
-    height:64px;
-  }
-  .brand{
-    display:flex; align-items:center; gap:10px;
-    font-family:'Fraunces', serif; font-size:18px; font-weight:600;
-    letter-spacing:0.01em;
-    text-decoration:none;
-  }
-  .brand .mark{
-    width:20px; height:20px; flex-shrink:0;
-  }
-  .navlinks{display:flex; gap:32px; font-size:14px;}
-  .navlinks a{
-    text-decoration:none; color:var(--ash);
-    transition:color 0.15s ease;
-  }
-  .navlinks a:hover{color:var(--paper);}
-  .navlinks{display:none;}
-  @media (min-width:800px){.navlinks{display:flex;}}
-  .navcta{
-    font-size:13px; padding:9px 18px;
-    border:1px solid var(--bronze-dim);
-    border-radius:2px;
-    text-decoration:none;
-    color:var(--paper);
-    font-family:'IBM Plex Mono', monospace;
-    transition:background 0.15s ease, border-color 0.15s ease;
-  }
-  .navcta:hover{background:rgba(176,137,74,0.12); border-color:var(--bronze);}
+  <!-- Open Graph / Social preview -->
+  <meta property="og:title" content="RareMetal-as-a-Service — Metal Verification Network (MVN)">
+  <meta property="og:description" content="A Metal Verification Network and Proof-of-Reserve framework that lets custodians attest metal holdings with verifiable on-chain records while keeping media private.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://cryptosweden.github.io/raremetal-as-a-service/">
 
-  /* ---- eyebrow / stamp style label ---- */
-  .stamp{
-    display:inline-flex; align-items:center; gap:10px;
-    font-family:'IBM Plex Mono', monospace;
-    font-size:12px; letter-spacing:0.12em; text-transform:uppercase;
-    color:var(--bronze);
-    margin-bottom:20px;
-  }
-  .stamp::before{
-    content:"";
-    width:7px; height:7px;
-    border:1px solid var(--bronze);
-    transform:rotate(45deg);
-    flex-shrink:0;
-  }
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="RareMetal-as-a-Service — Metal Verification Network (MVN)">
+  <meta name="twitter:description" content="A Metal Verification Network and Proof-of-Reserve framework that lets custodians attest metal holdings with verifiable on-chain records while keeping media private.">
 
-  /* ---- hero ---- */
-  .hero{
-    padding:100px 0 80px;
-    position:relative;
-  }
-  .hero-grid{
-    display:grid; grid-template-columns:1.1fr 0.9fr; gap:64px; align-items:center;
-  }
-  @media (max-width:900px){.hero-grid{grid-template-columns:1fr; gap:56px;}}
-  .hero h1{
-    font-size:clamp(34px,5vw,56px);
-    line-height:1.08;
-  }
-  .hero h1 em{
-    font-style:italic; color:var(--bronze);
-  }
-  .hero p.lede{
-    font-size:17px; line-height:1.65; color:#C9C2AF;
-    max-width:480px; margin:24px 0 32px;
-  }
-  .hero-ctas{display:flex; gap:14px; flex-wrap:wrap;}
-  .btn-primary{
-    background:var(--bronze); color:var(--ink);
-    padding:13px 24px; border-radius:2px;
-    text-decoration:none; font-weight:600; font-size:14.5px;
-    display:inline-flex; align-items:center; gap:8px;
-    transition:background 0.15s ease;
-  }
-  .btn-primary:hover{background:#c49a5e;}
-  .btn-secondary{
-    padding:13px 24px; border-radius:2px;
-    border:1px solid var(--hairline);
-    text-decoration:none; font-size:14.5px; color:var(--paper);
-    transition:border-color 0.15s ease;
-  }
-  .btn-secondary:hover{border-color:var(--ash);}
-
-  /* ---- signature diagram: density verification ---- */
-  .assay-panel{
-    background:var(--ink-soft);
-    border:1px solid var(--hairline);
-    border-radius:4px;
-    padding:28px 26px 24px;
-  }
-  .assay-panel .panel-head{
-    display:flex; justify-content:space-between; align-items:baseline;
-    font-family:'IBM Plex Mono', monospace; font-size:11px;
-    color:var(--ash); letter-spacing:0.08em; text-transform:uppercase;
-    margin-bottom:18px;
-  }
-  .assay-panel .panel-head .live{color:var(--verdigris);}
-  .assay-panel .panel-head .live::before{
-    content:"●"; margin-right:6px; font-size:8px;
-    animation:pulse 2s ease-in-out infinite;
-  }
-  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.35;}}
-  svg#density-svg{width:100%; height:auto; display:block;}
-  .readout{
-    display:grid; grid-template-columns:1fr 1fr 1fr; gap:1px;
-    background:var(--hairline);
-    margin-top:20px; border-radius:3px; overflow:hidden;
-  }
-  .readout div{
-    background:var(--ink-soft); padding:14px 12px;
-  }
-  .readout .label{
-    font-family:'IBM Plex Mono', monospace; font-size:10px;
-    color:var(--ash); text-transform:uppercase; letter-spacing:0.08em;
-    margin-bottom:6px;
-  }
-  .readout .value{
-    font-family:'IBM Plex Mono', monospace; font-size:17px; color:var(--paper);
-  }
-  .readout .value.good{color:var(--verdigris);}
-
-  /* ---- section shell ---- */
-  section{padding:88px 0;}
-  .section-head{max-width:620px; margin-bottom:56px;}
-  .section-head h2{font-size:clamp(26px,3.4vw,36px); line-height:1.15;}
-  .section-head p{color:#C9C2AF; font-size:16px; line-height:1.65; margin-top:16px;}
-
-  .divider{
-    border:none; border-top:1px solid var(--hairline); margin:0;
-  }
-
-  /* ---- problem / solution on paper ---- */
-  .paper-section{background:var(--paper); color:var(--ink);}
-  .paper-section .section-head p{color:var(--ash-on-paper);}
-  .compare{
-    display:grid; grid-template-columns:1fr 1fr; gap:1px;
-    background:var(--hairline-paper);
-    border:1px solid var(--hairline-paper);
-    border-radius:4px; overflow:hidden;
-  }
-  @media (max-width:760px){.compare{grid-template-columns:1fr;}}
-  .compare > div{background:var(--paper); padding:32px;}
-  .compare .stamp{color:var(--bronze-dim);}
-  .compare h3{font-size:19px; margin-bottom:14px;}
-  .compare ul{margin:0; padding:0; list-style:none;}
-  .compare li{
-    padding:10px 0; border-top:1px solid var(--hairline-paper);
-    font-size:14.5px; line-height:1.55; color:var(--ash-on-paper);
-  }
-  .compare li:first-child{border-top:none;}
-  .compare .now li::before{content:"— "; color:var(--ash-on-paper);}
-  .compare .next li::before{content:"✓ "; color:var(--verdigris); font-weight:600;}
-  .compare .next li{color:var(--ink);}
-
-  /* ---- products ---- */
-  .products{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--hairline); border:1px solid var(--hairline); border-radius:4px; overflow:hidden;}
-  @media (max-width:860px){.products{grid-template-columns:1fr;}}
-  .product-card{background:var(--ink); padding:32px 28px; min-height:260px; display:flex; flex-direction:column;}
-  .product-card .num{font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--bronze); margin-bottom:16px;}
-  .product-card h3{font-size:20px; margin-bottom:12px;}
-  .product-card p{font-size:14.5px; line-height:1.6; color:var(--ash); margin:0; flex-grow:1;}
-  .product-card .tag{
-    margin-top:20px; font-family:'IBM Plex Mono', monospace; font-size:11px;
-    color:var(--verdigris); text-transform:uppercase; letter-spacing:0.06em;
-  }
-
-  /* ---- flow steps ---- */
-  .flow{position:relative;}
-  .flow-row{
-    display:grid; grid-template-columns:56px 1fr; gap:24px;
-    padding:28px 0; border-top:1px solid var(--hairline);
-  }
-  .flow-row:last-child{border-bottom:1px solid var(--hairline);}
-  .flow-row .idx{
-    font-family:'IBM Plex Mono', monospace; color:var(--bronze); font-size:14px; padding-top:2px;
-  }
-  .flow-row h3{font-size:18px; margin-bottom:8px;}
-  .flow-row p{font-size:14.5px; color:var(--ash); line-height:1.6; margin:0; max-width:560px;}
-
-  /* ---- honest gap callout ---- */
-  .callout{
-    border:1px solid var(--hairline);
-    border-left:3px solid var(--verdigris);
-    border-radius:2px;
-    padding:26px 28px;
-    background:var(--ink-soft);
-  }
-  .callout .stamp{color:var(--verdigris); margin-bottom:14px;}
-  .callout p{font-size:14.5px; line-height:1.7; color:#C9C2AF; margin:0;}
-
-  /* ---- footer ---- */
-  footer{
-    border-top:1px solid var(--hairline);
-    padding:48px 0;
-  }
-  .footer-row{
-    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;
-  }
-  footer .brand{font-size:15px;}
-  footer .fine{font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--ash);}
-
-  @media (prefers-reduced-motion: reduce){
-    .assay-panel .panel-head .live::before{animation:none;}
-    #bar-fill, #displacement-line, #ripple{animation:none !important;}
-  }
-</style>
+  <style>
+    :root{--bg:#0b0b0f;--card:#0f1720;--muted:#94a3b8;--accent:#f6c85f;--text:#e6eef8}
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;line-height:1.6;margin:0;background:linear-gradient(180deg,#05060a 0%, #081126 100%);color:var(--text);-webkit-font-smoothing:antialiased}
+    .wrap{max-width:880px;margin:48px auto;padding:28px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;box-shadow:0 6px 30px rgba(2,6,23,0.6)}
+    h1{margin-top:0;font-size:28px}
+    p.lead{color:var(--muted);margin-top:6px}
+    h2{color:var(--accent);margin-bottom:6px}
+    pre, code{background:#071127;padding:6px;border-radius:6px;color:var(--accent);overflow:auto}
+    a{color:#9bd3ff;text-decoration:none}
+    footer{margin-top:28px;color:var(--muted);font-size:14px}
+    ul{margin-top:6px}
+  </style>
 </head>
 <body>
+  <main class="wrap">
+    <h1>RareMetal-as-a-Service</h1>
+    <p class="lead">Metal Verification Network (MVN) and a Proof-of-Reserve framework for auditable, privacy-preserving attestations of physical precious metals.</p>
 
-<nav>
-  <div class="wrap">
-    <a href="#top" class="brand">
-      <svg class="mark" viewBox="0 0 20 20" fill="none">
-        <rect x="2" y="6" width="16" height="10" rx="1" stroke="#B0894A" stroke-width="1.4"/>
-        <path d="M5 6L7 3H13L15 6" stroke="#B0894A" stroke-width="1.4" stroke-linejoin="round"/>
-        <path d="M9 10.5L10.2 11.7L13 8.5" stroke="#5C7C6B" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      Cupel
-    </a>
-    <div class="navlinks">
-      <a href="#problem">The Problem</a>
-      <a href="#network">Metal Verification Network</a>
-      <a href="#proof">Proof of Reserve</a>
-      <a href="#service">RareMetal-as-a-Service</a>
-    </div>
-    <a href="#access" class="navcta">Request Access</a>
-  </div>
-</nav>
+    <h2>Overview</h2>
+    <p>Today's gold vaults mostly rely on a "trust us" model. RareMetal-as-a-Service aims to change that by providing verifiable, auditable attestations that a metal holding actually exists without exposing private media or full inventories.</p>
 
-<div id="top"></div>
-<section class="hero">
-  <div class="wrap hero-grid">
-    <div>
-      <div class="stamp">Verified Metal Reserves</div>
-      <h1>Gold doesn't need<br>your trust. It needs<br><em>proof.</em></h1>
-      <p class="lede">Custodians attest what they hold — weight, purity, imagery — on a cadence they choose. We verify it, hash it, and publish a record anyone can check. The metal never leaves the vault. The proof never stops updating.</p>
-      <div class="hero-ctas">
-        <a href="#access" class="btn-primary">Request Access →</a>
-        <a href="#network" class="btn-secondary">How verification works</a>
-      </div>
-    </div>
-    <div class="assay-panel">
-      <div class="panel-head">
-        <span>Density Verification — Live Reading</span>
-        <span class="live">Attesting</span>
-      </div>
-      <svg id="density-svg" viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0" y="0" width="320" height="220" fill="none"/>
-        <!-- vessel -->
-        <path d="M90 40 L90 190 Q90 198 98 198 L222 198 Q230 198 230 190 L230 40" stroke="#8A8378" stroke-width="1.4" fill="none" opacity="0.6"/>
-        <!-- fluid -->
-        <path id="fluid" d="M92 120 L228 120 L228 190 Q228 196 222 196 L98 196 Q92 196 92 190 Z" fill="#5C7C6B" opacity="0.28"/>
-        <!-- fluid surface line with ripple anim -->
-        <line id="ripple" x1="92" y1="120" x2="228" y2="120" stroke="#5C7C6B" stroke-width="1.2"/>
-        <!-- suspended bar -->
-        <g id="bar-fill">
-          <rect x="140" y="70" width="40" height="60" rx="2" fill="#B0894A"/>
-          <rect x="140" y="70" width="40" height="60" rx="2" fill="none" stroke="#7d602f" stroke-width="1"/>
-          <line x1="160" y1="40" x2="160" y2="70" stroke="#8A8378" stroke-width="1"/>
-        </g>
-        <!-- scale marks -->
-        <g stroke="#8A8378" stroke-width="1" opacity="0.5">
-          <line x1="238" y1="60" x2="244" y2="60"/>
-          <line x1="238" y1="90" x2="244" y2="90"/>
-          <line x1="238" y1="120" x2="244" y2="120"/>
-          <line x1="238" y1="150" x2="244" y2="150"/>
-          <line x1="238" y1="180" x2="244" y2="180"/>
-        </g>
-        <style>
-          #bar-fill{ animation: lower 3.5s ease-in-out infinite; transform-origin: 160px 40px; }
-          #ripple{ animation: settle 3.5s ease-in-out infinite; }
-          @keyframes lower{
-            0%{ transform: translateY(-38px); }
-            35%{ transform: translateY(0); }
-            100%{ transform: translateY(0); }
-          }
-          @keyframes settle{
-            0%{ transform: translateY(0); opacity:0.3; }
-            35%{ transform: translateY(-14px); opacity:1; }
-            45%{ transform: translateY(-14px); opacity:1; }
-            100%{ transform: translateY(-14px); opacity:1; }
-          }
-        </style>
-      </svg>
-      <div class="readout">
-        <div>
-          <div class="label">Displacement</div>
-          <div class="value mono">17.4 ml</div>
-        </div>
-        <div>
-          <div class="label">Fineness</div>
-          <div class="value mono good">99.98%</div>
-        </div>
-        <div>
-          <div class="label">Status</div>
-          <div class="value mono good">Verified</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+    <h2>Core pieces</h2>
+    <ul>
+      <li><strong>MVN (Metal Verification Network)</strong> — attestors (vault custodians, assayers, auditors) submit signed proofs of metal holdings (weight, purity, serial/bar numbers) without exposing full inventories.</li>
+      <li><strong>RareMetal-as-a-Service</strong> — framework for registering a metal holding, linking it to a custodian attestation, and issuing a verifiable "proof of reserve" that others can check on-chain without seeing private media.</li>
+      <li><strong>Marketplace layer (optional)</strong> — surface metal-backed lending, redemption, or trading opportunities once base verification exists.</li>
+    </ul>
 
-<hr class="divider">
+    <h2>Problems this project addresses</h2>
+    <ul>
+      <li><strong>Custodian trust model</strong>: metals aren't natively on-chain like a wallet balance — custodians or federated attestors must prove stored metal is real and allocated.</li>
+      <li><strong>Proof granularity</strong>: different proofs for possession (bar exists and is authentic), ownership (claim to it), and value (aggregate worth without revealing specific bars) are required.</li>
+    </ul>
 
-<section id="problem" class="paper-section">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="stamp">The Gap</div>
-      <h2>Reserves you're asked to believe, not verify</h2>
-      <p>Almost every "backed by physical metal" claim rests on a self-reported inventory list and an audit that was already stale the day it was filed. That gap is where every bullion shortfall in the last fifty years has hidden.</p>
-    </div>
-    <div class="compare">
-      <div class="now">
-        <div class="stamp">Today</div>
-        <h3>The handshake model</h3>
-        <ul>
-          <li>Annual or quarterly audits, already outdated by publication</li>
-          <li>Static PDF certificates with no way to independently verify</li>
-          <li>Self-reported inventory, taken on faith</li>
-          <li>No way to detect a bar pledged twice, in two places</li>
-        </ul>
-      </div>
-      <div class="next">
-        <div class="stamp">With Cupel</div>
-        <h3>The proof model</h3>
-        <ul>
-          <li>Attestations on a cadence the custodian sets — weekly or monthly</li>
-          <li>Cryptographic hash anchored publicly, evidence stays private</li>
-          <li>Automated + human-reviewed verification on every submission</li>
-          <li>Network-wide double-pledge detection on every holding ID</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
+    <h2>Approach (AI-assisted verification)</h2>
+    <ol>
+      <li>Custodian uploads photo/video of metal holding (weekly/monthly, their choice).</li>
+      <li>AI vision model evaluates: does this look like real bars/coins, do visible serials/hallmarks match registered values, and is the submission consistent with previous submissions.</li>
+      <li>AI verdict + hash of the media + metadata → signed attestation by custodian.</li>
+      <li>Attestation (hash only, not the raw media) → written on-chain as a Proof-of-Reserve record.</li>
+      <li>Anyone can verify: on-chain hash exists with timestamp, custodian signature, and AI confidence score — without seeing the original photo or full inventory.</li>
+    </ol>
 
-<section id="network">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="stamp">Architecture</div>
-      <h2>The Metal Verification Network</h2>
-      <p>Custodians, assayers, and auditors submit signed attestations. What gets published is a hash and a signature — enough to verify a claim is real, not enough to expose the vault behind it.</p>
-    </div>
-    <div class="flow">
-      <div class="flow-row">
-        <div class="idx">01</div>
-        <div>
-          <h3>Custodian submits evidence</h3>
-          <p>Photo or video, weight, purity, and serial data — captured at the time of attestation, signed by the submitting party.</p>
-        </div>
-      </div>
-      <div class="flow-row">
-        <div class="idx">02</div>
-        <div>
-          <h3>Automated + human review</h3>
-          <p>Media authenticity, consistency with prior submissions, and cross-network duplication checks run first. Anything inconclusive routes to a human assayer before acceptance.</p>
-        </div>
-      </div>
-      <div class="flow-row">
-        <div class="idx">03</div>
-        <div>
-          <h3>Hash anchored, evidence stays private</h3>
-          <p>The holding ID, evidence hash, metadata hash, signature, and timestamp are published. The photo itself never leaves the custodian's hands.</p>
-        </div>
-      </div>
-      <div class="flow-row">
-        <div class="idx">04</div>
-        <div>
-          <h3>Anyone can verify, no one can see the vault</h3>
-          <p>A lender, buyer, or regulator checks that the claim holds — without receiving inventory lists, client identities, or vault locations.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+    <p>Visit the project repository on GitHub for more details: <a href="https://github.com/cryptosweden/raremetal-as-a-service">cryptosweden/raremetal-as-a-service</a></p>
 
-<hr class="divider">
-
-<section id="proof">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="stamp">The Output</div>
-      <h2>Proof of Reserve</h2>
-      <p>Three distinct claims, stated explicitly rather than implied — because "the gold exists" and "you own the gold" are not the same fact.</p>
-    </div>
-    <div class="products">
-      <div class="product-card">
-        <div class="num">Claim A</div>
-        <h3>Possession</h3>
-        <p>This specific bar or lot exists and was verified genuine at the given timestamp. Says nothing about who owns it.</p>
-        <div class="tag">Existence only</div>
-      </div>
-      <div class="product-card">
-        <div class="num">Claim B</div>
-        <h3>Ownership</h3>
-        <p>This entity holds legal claim to the attested holding. Requires the custodian to attest allocation, not just custody.</p>
-        <div class="tag">Existence + allocation</div>
-      </div>
-      <div class="product-card">
-        <div class="num">Claim C</div>
-        <h3>Aggregate Value</h3>
-        <p>Total holdings are worth at least X, without revealing which bars, how many, or where. Built for solvency, not inventory disclosure.</p>
-        <div class="tag">Value without detail</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="service" class="paper-section">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="stamp">The Product</div>
-      <h2>RareMetal-as-a-Service</h2>
-      <p>The framework that turns a holding into an ongoing proof feed — register it, attach a custodian, set a cadence, and share a record that updates itself.</p>
-    </div>
-    <div class="compare">
-      <div class="now" style="border-right:1px solid var(--hairline-paper);">
-        <div class="stamp">Built for</div>
-        <ul>
-          <li>Custodians offering verifiable holdings as a real differentiator</li>
-          <li>Funds and lenders using metal as collateral</li>
-          <li>Individual holders who want a checkable record without going public</li>
-        </ul>
-      </div>
-      <div class="next">
-        <div class="stamp">Deliberately not</div>
-        <ul>
-          <li>A custodian — RMaaS verifies attestations, it doesn't hold metal</li>
-          <li>A pricing or trading venue</li>
-          <li>A substitute for real-world chain of custody</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<hr class="divider">
-
-<section id="access">
-  <div class="wrap">
-    <div class="callout">
-      <div class="stamp">Stated Plainly</div>
-      <p>Photo and video evidence is easier to forge than a wallet signature, and a single frame proves a bar existed in front of a camera — not that it's allocated to you, or that the same bar isn't being shown elsewhere. We treat this as a real limit of a v1 system. Serialized bar registries, tamper-evident tagging, and independent assayer sign-off are on the roadmap specifically because photo evidence alone isn't the end state.</p>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap footer-row">
-    <a href="#top" class="brand">Cupel</a>
-    <div class="fine">METAL VERIFICATION NETWORK — EARLY STAGE — 2026</div>
-  </div>
-</footer>
-
+    <footer>
+      Note: This file is the project's homepage. I added a dedicated index.html so the GitHub Pages site will consistently show this polished content and provide social preview metadata (used by Discord/Twitter). If you'd like a custom logo or social image for richer previews I can add one next.
+    </footer>
+  </main>
 </body>
 </html>
