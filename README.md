@@ -25,6 +25,4 @@ Attestation (hash only, not the raw media) → written onchain as a "Proof of Re
 Anyone can verify: hash exists onchain, timestamp, custodian signature, AI confidence score — without seeing the actual photo or full inventory
 
 
-
-
-https://cryptosweden.github.io/raremetal-as-a-service/ - early website of the Metal Verification Network will look like and function.
+https://lustrous-sherbet-661e40.netlify.app - early website of the Metal Verification Network will look like and function.
